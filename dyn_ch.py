@@ -75,8 +75,8 @@ class DynCH:
         point_1_scaled, point_2_scaled = self.scale * point_1 - self.scaled_centre, \
                                          self.scale * point_2 - self.scaled_centre
 
-        x_1, y_1 = point_1_scaled[0], point_1_scaled[1]
-        x_2, y_2 = point_2_scaled[0], point_2_scaled[1]
+        x_1, y_1 = int(point_1_scaled[0]), int(point_1_scaled[1])
+        x_2, y_2 = int(point_2_scaled[0]), int(point_2_scaled[1])
 
         if self._sign_func(x_1) == self._sign_func(x_2) and \
                 x_1 ** 2 * (x_2 ** 2 + y_2 ** 2) == x_2 ** 2 * (x_1 ** 2 + y_1 ** 2):

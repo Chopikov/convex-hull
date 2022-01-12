@@ -3,7 +3,7 @@ import numpy as np
 
 class Point(np.ndarray):
     def __new__(cls, x, y):
-        return np.ndarray(shape=(2,), dtype=int, buffer=np.array([x, y])).view(cls)
+        return np.ndarray(shape=(2,), dtype=np.int64, buffer=np.array([x, y], dtype=np.int64)).view(cls)
 
     def __array_finalize__(self, obj) -> None:
         if obj is None:

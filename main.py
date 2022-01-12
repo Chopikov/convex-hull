@@ -3,10 +3,8 @@ from point import Point
 
 if __name__ == '__main__':
     dch = DynCH()
-    while True:
-        print(dch.get_ch())
-        inp = input()
-        if inp == 'q':
-            break
-        x, y = map(int, inp.split())
+    for i in range(700):
+        x, y = i, i*i
         dch.add_point(Point(x, y))
+        print(dch.get_ch())
+    print(len(dch.get_ch()))
