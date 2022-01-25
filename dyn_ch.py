@@ -129,30 +129,114 @@ class DynCH:
         def check_det_cond(a: Point, b: Point, c: Point):
             return a.x * (b.y - c.y) - a.y * (b.x - c.x) + b.x * c.y - b.y * c.x
 
-        def insert_into_ch():
+        def get_dir(vec_1, vec_2):
+            return vec_1.x * vec_2.y - vec_1.y * vec_2.x
+
+        def get_insert_ids():
             res = [None, None]
             n = len(self._ch)
-            for i in range(n):
-                if self._ch[i] == point:
-                    res[0] = i
-                    res[1] = i
-                    break
-                vec_1 = self._ch[i] - self._ch[(i + n - 1) % n]
-                vec = self._ch[i] - point
-                vec_2 = self._ch[(i + 1) % n] - self._ch[i]
-                dir_1 = vec_1.x * vec.y - vec_1.y * vec.x
-                dir_2 = vec.x * vec_2.y - vec.y * vec_2.x
-                if dir_1 < 0 and dir_2 <= 0:
-                    res[0] = i
-                if dir_1 >= 0 and dir_2 > 0:
-                    res[1] = i
 
-            if res[0] > res[1]:
-                self._ch = self._ch[res[1]:res[0] + 1]
+            vl = self._ch[1] - self._ch[0]
+            to_l = self._ch[0] - point
+            v_prev = self._ch[0] - self._ch[n - 1]
+            to_prev = self._ch[n - 1] - point
+            pointing_l = get_dir(to_l, vl)
+            pointing_prev = get_dir(to_prev, v_prev)
+            l = 0
+            r = n - 1
+            if pointing_prev > 0 and pointing_l <= 0:
+                res[0] = 0
+                if pointing_l == 0:
+                    v_next = self._ch[2] - self._ch[1]
+                    to_next = self._ch[1] - point
+                    pointing_next = get_dir(to_next, v_next)
+                    if pointing_next > 0:
+                        res[0] = 1
+                    elif pointing_next == 0:
+                        return [1, 1]
             else:
-                self._ch = self._ch[:res[0] + 1] + self._ch[res[1]:]
-            self._intermediate_ch[0] = [dot for dot in self._ch if self.scale * dot.y - self.scaled_centre.y >= 0]
-            self._intermediate_ch[1] = [dot for dot in self._ch if self.scale * dot.y - self.scaled_centre.y < 0]
+                while l < r - 1:
+                    m = (r + l + 1) // 2
+                    vm = self._ch[m + 1] - self._ch[m]
+                    to_m = self._ch[m] - point
+                    pointing_m = get_dir(to_m, vm)
+                    lm_dir = get_dir(to_l, to_m)
+                    if (pointing_m <= 0 or lm_dir < 0) and (pointing_l > 0 or lm_dir >= 0):
+                        r = m
+                    else:
+                        l = m
+                        to_l = to_m
+                        pointing_l = pointing_m
+                next = (r + 1) % n
+                to_r = self._ch[r] - point
+                vr = self._ch[next] - self._ch[r]
+                pointing_r = get_dir(to_r, vr)
+                if pointing_r <= 0 and pointing_l > 0:
+                    res[0] = r
+                    v_next = self._ch[(next + 1) % n] - self._ch[next]
+                    to_next = self._ch[next] - point
+                    pointing_next = get_dir(to_next, v_next)
+                    if pointing_r == 0 and pointing_next == 0:
+                        return [r, r]
+                else:
+                    return [None, None]
+            vl = self._ch[1] - self._ch[0]
+            to_l = self._ch[0] - point
+            v_prev = self._ch[0] - self._ch[n - 1]
+            to_prev = self._ch[n - 1] - point
+            pointing_l = get_dir(to_l, vl)
+            pointing_prev = get_dir(to_prev, v_prev)
+            l = 0
+            r = n - 1
+            if pointing_prev <= 0 and pointing_l > 0:
+                res[1] = 0
+                if res[0] != n - 1 and pointing_prev == 0:
+                    res[1] = n - 1
+            else:
+                while l < r - 1:
+                    m = (r + l + 1) // 2
+                    vm = self._ch[m + 1] - self._ch[m]
+                    to_m = self._ch[m] - point
+                    pointing_m = get_dir(to_m, vm)
+                    lm_dir = get_dir(to_l, to_m)
+                    if (pointing_l <= 0 or lm_dir <= 0) and (pointing_m > 0 or lm_dir > 0):
+                        r = m
+                    else:
+                        l = m
+                        to_l = to_m
+                        pointing_l = pointing_m
+                to_r = self._ch[r] - point
+                vr = self._ch[(r + 1) % n] - self._ch[r]
+                pointing_r = get_dir(to_r, vr)
+                if pointing_r > 0 and pointing_l <= 0:
+                    res[1] = r
+            return res
+
+        def insert_into_ch():
+            res = get_insert_ids()
+            if res[0] is None or res[1] is None:
+                print(f'WRONG ANSWER: {res[0]}, {res[1]}')
+                return
+            len_pos = len(self._intermediate_ch[0])
+            if res[0] > res[1]:
+                if res[1] < len_pos and res[0] < len_pos:
+                    self._intermediate_ch[0] = self._intermediate_ch[0][res[1]:res[0] + 1]
+                    self._intermediate_ch[1] = []
+                elif res[1] < len_pos <= res[0]:
+                    self._intermediate_ch[0] = self._intermediate_ch[0][res[1]:]
+                    self._intermediate_ch[1] = self._intermediate_ch[1][:res[0] + 1 - len_pos]
+                elif res[1] >= len_pos and res[0] >= len_pos:
+                    self._intermediate_ch[0] = []
+                    self._intermediate_ch[1] = self._intermediate_ch[1][res[1] - len_pos:res[0] + 1 - len_pos]
+            else:
+                if res[0] < len_pos and res[1] < len_pos:
+                    self._intermediate_ch[0] = self._intermediate_ch[0][:res[0] + 1] + self._intermediate_ch[0][res[1]:]
+                elif res[0] < len_pos <= res[1]:
+                    self._intermediate_ch[0] = self._intermediate_ch[0][:res[0] + 1]
+                    self._intermediate_ch[1] = self._intermediate_ch[1][res[1] - len_pos:]
+                elif res[1] >= len_pos and res[0] >= len_pos:
+                    self._intermediate_ch[1] = self._intermediate_ch[1][:res[0] + 1 - len_pos] \
+                                               + self._intermediate_ch[1][res[1] - len_pos:]
             j, array_num = self._binary_insert_position(point)
             self._intermediate_ch[array_num] = self._intermediate_ch[array_num][:j] + [point] \
                                                + self._intermediate_ch[array_num][j:]
