@@ -190,8 +190,6 @@ class DynCH:
             r = n - 1
             if pointing_prev <= 0 and pointing_l > 0:
                 res[1] = 0
-                if res[0] != n - 1 and pointing_prev == 0:
-                    res[1] = n - 1
             else:
                 while l < r - 1:
                     m = (r + l + 1) // 2
