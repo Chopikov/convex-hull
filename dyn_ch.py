@@ -1,3 +1,4 @@
+from blist import blist
 from enum import Enum
 from point import Point
 
@@ -13,7 +14,7 @@ class DynCH:
         self._ch = []
         self.scaled_centre = None
         self.scale = 3
-        self._intermediate_ch = [[], []]
+        self._intermediate_ch = [blist(), blist()]
 
     def get_ch(self):
         return self._ch
