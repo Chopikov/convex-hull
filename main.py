@@ -5,7 +5,7 @@ from dyn_ch import DynCH
 from point import Point
 
 if __name__ == '__main__':
-    N = 200000
+    N = 10000
     start = time.time()
     dch = DynCH()
     for i in range(N):

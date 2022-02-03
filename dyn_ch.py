@@ -34,8 +34,7 @@ class DynCH:
                 self._ch.append(point)
                 for dot in self._ch:
                     j, array_num = self._binary_insert_position(dot)
-                    self._intermediate_ch[array_num] = self._intermediate_ch[array_num][:j] + [dot] + \
-                                                       self._intermediate_ch[array_num][j:]
+                    self._intermediate_ch[array_num].insert(j, dot)
                 self._ch = self._intermediate_ch[0] + self._intermediate_ch[1]
             return
         elif point_count == 1:
@@ -237,8 +236,7 @@ class DynCH:
                     self._intermediate_ch[1] = self._intermediate_ch[1][:res[0] + 1 - len_pos] \
                                                + self._intermediate_ch[1][res[1] - len_pos:]
             j, array_num = self._binary_insert_position(point)
-            self._intermediate_ch[array_num] = self._intermediate_ch[array_num][:j] + [point] \
-                                               + self._intermediate_ch[array_num][j:]
+            self._intermediate_ch[array_num].insert(j, point)
             self._ch = self._intermediate_ch[0] + self._intermediate_ch[1]
 
         j, array_num = self._binary_insert_position(point)
