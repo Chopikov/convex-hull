@@ -1,5 +1,18 @@
 # convex-hull
+Tested on python 3.8 and python 3.9
+## Prerequisites
+For linux (tested on Ubuntu 20.04):
+
+`sudo apt-get install python3-dev gcc`
+
 ## Installation
-Tested on python 3.8
 - `pip install -r requirements.txt`
-- `cd blist-py39 && python setup.py install`
+- `cd blist-py39`
+- `python setup.py install`
+
+If you have issues with blist installation, try to install common dependencies:
+
+`sudo apt-get install build-essential autoconf libtool pkg-config python-opengl python-imaging python-pyrex python-pyside.qtopengl idle-python2.7 qt4-dev-tools qt4-designer libqtgui4 libqtcore4 libqt4-xml libqt4-test libqt4-script libqt4-network libqt4-dbus python-qt4 python-qt4-gl libgle3 python-dev`
+
+## Usage
+`python main.py`
